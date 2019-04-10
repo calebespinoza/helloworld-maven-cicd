@@ -5,6 +5,9 @@ node {
 
     stage('Build') {
         sh 'ls'
+        sh 'chmod +x mvnw'
+        sh './mvnw clean compile'
+        sh './mvnw package'
     }
     
     /*stage('Copy Archive') {
