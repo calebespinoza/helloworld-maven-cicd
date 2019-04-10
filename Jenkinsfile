@@ -1,6 +1,11 @@
 node {
     stage('Clone Code') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
+        checkout([$class: 'GitSCM', 
+        branches: [[name: '*/master']], 
+        doGenerateSubmoduleConfigurations: false, 
+        extensions: [], 
+        submoduleCfg: [], 
+        userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
     }
 
     stage('Build') {
@@ -11,6 +16,8 @@ node {
     }
 
     stage('Archive Artifact') {
-        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true, onlyIfSuccessful: true
+        archiveArtifacts artifacts: '**/target/*.jar', 
+        fingerprint: true, 
+        onlyIfSuccessful: true
     }
 }
