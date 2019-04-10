@@ -1,6 +1,6 @@
 stages {
     stage('Clone Code') {
-        git 'https://gitlab.com/calebespinoza/hello-world-maven.git'
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
     }
 
     stage('Build') {
