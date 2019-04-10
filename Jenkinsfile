@@ -9,6 +9,10 @@ node {
         sh './mvnw clean compile'
         sh './mvnw package'
     }
+
+    stage('Archive Artifact') {
+        archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true, onlyIfSuccessful: true
+    }
     
     /*stage('Copy Archive') {
          steps {
