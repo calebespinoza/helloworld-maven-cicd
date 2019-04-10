@@ -13,15 +13,4 @@ node {
     stage('Archive Artifact') {
         archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true, onlyIfSuccessful: true
     }
-    
-    /*stage('Copy Archive') {
-         steps {
-             script {
-                 step ([$class: 'CopyArtifact',
-                 projectName: 'Create_archive',
-                 filter: "packages/infra*.zip",
-                 target: 'Infra']);
-             }
-         }
-     }*/
 }
