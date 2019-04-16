@@ -1,8 +1,4 @@
 node {
-    stage('Read PARAMETERS') {
-        println env.WHAT_FOR_DEPLOYING
-    }
-
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
         branches: [[name: '*/master']], 
