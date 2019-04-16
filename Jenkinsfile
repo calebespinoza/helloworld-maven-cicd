@@ -20,4 +20,8 @@ node {
         fingerprint: true, 
         onlyIfSuccessful: true
     }
+
+    stage('Trigger Promotion') {
+        build 'Promotion1'
+    }
 }
