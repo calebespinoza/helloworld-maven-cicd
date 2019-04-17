@@ -1,6 +1,8 @@
-/*package com.baccredomatic.helloworld
+package com.baccredomatic.helloworld
 //import com.baccredomatic.helloworld.Credomatic
+class Utils {
+    def obj = new Credomatic()
+}
 
-def obj = new Credomatic()
-def msg = obj.getMsg()*/
+def msg = obj.getMsg()
 return "Break the wall"
