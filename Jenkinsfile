@@ -40,6 +40,6 @@ node {
         ]
     }
     stage('Print Parameters'){
-        echo env.$serverBaseName1
+        echo ${serverBaseName1}
     }
 }
