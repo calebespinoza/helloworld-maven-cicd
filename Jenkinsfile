@@ -1,3 +1,7 @@
+import com.baccredomatic.helloworld.*
+Credomatic obj = new Credomatic();
+def msg = obj.getMsg();
+
 node {
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
