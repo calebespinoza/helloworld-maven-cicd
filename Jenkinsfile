@@ -1,6 +1,4 @@
-import com.baccredomatic.helloworld.Credomatic
-def obj = new Credomatic()
-def msg = obj.getMsg()
+def utils
 
 node {
     stage('Clone Code') {
@@ -26,6 +24,8 @@ node {
     }
 
     stage('Trigger Promotion') {
+        utils = load 'utils.groovy'
+        println utils
         build 'Promotion1'
     }
 }
