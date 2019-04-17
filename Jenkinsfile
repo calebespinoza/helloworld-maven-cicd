@@ -1,4 +1,10 @@
-def utils
+def serverBaseName = 'SEC3ServerAS'
+def clusterName = 'SEC3ServerCluster'
+def appName = 'SbeBackEndEAR2'
+def virtualHost = 'ebac_host'
+def appDestination = 'CR'
+def serverQuantity = 2
+def dirEar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 node {
     stage('Clone Code') {
@@ -24,8 +30,13 @@ node {
     }
 
     stage('Trigger Promotion') {
-        utils = load 'utils.groovy'
-        println utils
         build 'Promotion1'
+        parameters: [
+			string(name: 'serverBaseName', value: "${serverBaseName}"), 
+			string(name: 'direccionEAR', value: "${dirEar}"), 
+			string(name: 'virtualHost', value: "${virtualHost}"), 
+			string(name: 'clusterName', value: "${clusterName}"), 
+			string(name: 'appName', value: "${appName}")
+        ]
     }
 }
