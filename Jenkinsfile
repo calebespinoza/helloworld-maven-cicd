@@ -1,4 +1,4 @@
-import com.baccredomatic.helloworld.*
+import Credomatic
 def obj = new Credomatic()
 def msg = obj.getMsg()
 
