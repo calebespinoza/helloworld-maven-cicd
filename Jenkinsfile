@@ -25,7 +25,7 @@ node {
 
     stage('Trigger Promotion') {
         utils = load 'utils.groovy'
-        println utils.msg
+        println utils
         build 'Promotion1'
     }
 }
