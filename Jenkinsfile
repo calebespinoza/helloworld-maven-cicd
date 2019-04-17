@@ -1,6 +1,6 @@
 import com.baccredomatic.helloworld.*
-Credomatic obj = new Credomatic();
-def msg = obj.getMsg();
+def obj = new Credomatic()
+def msg = obj.getMsg()
 
 node {
     stage('Clone Code') {
