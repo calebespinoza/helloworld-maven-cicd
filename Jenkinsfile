@@ -32,11 +32,14 @@ node {
     stage('Trigger Promotion') {
         build 'Promotion1'
         parameters: [
-			string(name: 'serverBaseName', value: "${serverBaseName}"), 
+			string(name: 'serverBaseName1', value: "${serverBaseName}"), 
 			string(name: 'direccionEAR', value: "${dirEar}"), 
 			string(name: 'virtualHost', value: "${virtualHost}"), 
 			string(name: 'clusterName', value: "${clusterName}"), 
 			string(name: 'appName', value: "${appName}")
         ]
+    }
+    stage('Print Parameters'){
+        echo $serverBaseName1
     }
 }
