@@ -39,7 +39,4 @@ node {
 			string(name: 'appName', value: "${appName}")
         ]
     }
-    stage('Print Parameters'){
-        echo %serverBaseName1%
-    }
 }
