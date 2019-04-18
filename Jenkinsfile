@@ -40,6 +40,6 @@ node {
         ]
     }
     stage('Print Parameters'){
-        print ${serverBaseName1}
+        print "${serverBaseName1}"
     }
 }
