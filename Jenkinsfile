@@ -30,7 +30,6 @@ node {
     }
 
     stage('Trigger Promotion') {
-        build 'Promotion1'
         parameters: [
 			string(name: 'serverBaseName1', value: "${serverBaseName}"), 
 			string(name: 'direccionEAR', value: "${dirEar}"), 
@@ -38,5 +37,7 @@ node {
 			string(name: 'clusterName', value: "${clusterName}"), 
 			string(name: 'appName', value: "${appName}")
         ]
+
+        build 'Promotion1'
     }
 }
