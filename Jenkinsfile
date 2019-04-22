@@ -30,7 +30,8 @@ node {
     }
 
     stage('Trigger Promotion') {
-        parameters: [
+        build job: 'Promotion1', parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}")]
+        /*parameters: [
 			string(name: 'serverBaseName1', value: "${serverBaseName}"), 
 			string(name: 'direccionEAR', value: "${dirEar}"), 
 			string(name: 'virtualHost', value: "${virtualHost}"), 
@@ -38,6 +39,6 @@ node {
 			string(name: 'appName', value: "${appName}")
         ]
 
-        build 'Promotion1'
+        build 'Promotion1'*/
     }
 }
