@@ -42,5 +42,6 @@ node {
         ]
 
         build 'Promotion1'*/
+        echo "${env.JOB_NAME}"
     }
 }
