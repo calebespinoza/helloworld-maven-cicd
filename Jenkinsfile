@@ -1,4 +1,4 @@
-def serverBaseName = 'SEC3ServerAS'
+def serverBaseName = 'localhost'
 def clusterName = 'SEC3ServerCluster'
 def appName = 'SbeBackEndEAR2'
 def virtualHost = 'ebac_host'
