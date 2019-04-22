@@ -30,7 +30,9 @@ node {
     }
 
     stage('Trigger Promotion') {
-        build job: 'Promotion1', parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}")]
+        build job: 'Promotion1', 
+        parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
+        string(name: 'JobName', value: "${env.JOB_NAME}")]
         /*parameters: [
 			string(name: 'serverBaseName1', value: "${serverBaseName}"), 
 			string(name: 'direccionEAR', value: "${dirEar}"), 
