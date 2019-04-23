@@ -4,7 +4,7 @@ def appName = 'SbeBackEndEAR2'
 def virtualHost = 'ebac_host'
 def appDestination = 'CR'
 def serverQuantity = 2
-def dirEar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
+def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 node {
     stage('Clone Code') {
@@ -33,15 +33,6 @@ node {
         build job: 'Promotion1', 
         parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
         string(name: 'JobName', value: "${env.JOB_NAME}")]
-        /*parameters: [
-			string(name: 'serverBaseName1', value: "${serverBaseName}"), 
-			string(name: 'direccionEAR', value: "${dirEar}"), 
-			string(name: 'virtualHost', value: "${virtualHost}"), 
-			string(name: 'clusterName', value: "${clusterName}"), 
-			string(name: 'appName', value: "${appName}")
-        ]
-
-        build 'Promotion1'*/
-        echo "${env.JOB_NAME}"
+        //echo "${env.JOB_NAME}"
     }
 }
