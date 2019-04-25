@@ -7,6 +7,9 @@ def serverQuantity = 2
 def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 node {
+    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
+    def rtMaven = Artifactory.newMavenBuild()
+
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
         branches: [[name: '*/master']], 
@@ -29,10 +32,25 @@ node {
         onlyIfSuccessful: true
     }
 
-    stage('Trigger Promotion') {
+    stage('Artifactory Configuration') {
+        rtMaven.tool = MAVEN_TOOL
+        rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+        rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+        def buildInfo = Artifactory.newBuildInfo()
+    }
+
+    stage('Exec Maven') {
+        rtMaven.run pom: 'helloworld/pom.xml', goals: 'clean install', buildInfo: buildInfo
+    }
+
+    stage('Publish build info'){
+        server.publishBuildInfo buildInfo
+    }
+
+    /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
         parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
         string(name: 'JobName', value: "${env.JOB_NAME}")]
         //echo "${env.JOB_NAME}"
-    }
+    }*/
 }

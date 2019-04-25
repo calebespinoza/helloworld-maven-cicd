@@ -28,4 +28,11 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>5953cd8d77c9-snapshots</name>
+            <url>http://10.211.55.4:8081/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
