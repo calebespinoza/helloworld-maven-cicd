@@ -33,7 +33,7 @@ node {
     }
 
     stage('Artifactory Configuration') {
-        rtMaven.tool = MAVEN_TOOL
+        rtMaven.tool = "${env.MAVEN_TOOL}"
         rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
         def buildInfo = Artifactory.newBuildInfo()
