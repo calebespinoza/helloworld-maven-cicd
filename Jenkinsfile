@@ -6,9 +6,11 @@ def appDestination = 'CR'
 def serverQuantity = 2
 def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
+
 node {
     def server = Artifactory.newServer url: "${env.SERVER_URL}", credentialsId: "${env.CREDENTIALS}"
     def rtMaven = Artifactory.newMavenBuild()
+    def buildInfo = Artifactory.newBuildInfo()
 
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
@@ -36,7 +38,6 @@ node {
         rtMaven.tool = "${env.MAVEN_TOOL}"
         rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-        def buildInfo = Artifactory.newBuildInfo()
     }
 
     stage('Exec Maven') {
