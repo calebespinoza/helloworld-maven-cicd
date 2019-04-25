@@ -7,7 +7,7 @@ def serverQuantity = 2
 def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 node {
-    def server = Artifactory.newServer url: http://10.211.55.4:8081/artifactory, credentialsId: "${env.CREDENTIALS}"
+    def server = Artifactory.newServer url: 'http://10.211.55.4:8081/artifactory', credentialsId: "${env.CREDENTIALS}"
     def rtMaven = Artifactory.newMavenBuild()
 
     stage('Clone Code') {
