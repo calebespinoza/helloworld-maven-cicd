@@ -41,12 +41,12 @@ node {
     }
 
     stage('Exec Maven') {
-        rtMaven.run pom: 'helloworld/pom.xml', goals: './mvnw clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'helloworld/pom.xml', goals: './mvnw clean install'//, buildInfo: buildInfo
     }
 
-    stage('Publish build info'){
+    /*stage('Publish build info'){
         server.publishBuildInfo buildInfo
-    }
+    }*/
 
     /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
