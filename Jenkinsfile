@@ -26,6 +26,7 @@ node {
         sh 'chmod +x mvnw'
         sh './mvnw clean compile'
         sh './mvnw package'
+        sh 'pwd'
     }
 
     stage('Archive Artifact') {
