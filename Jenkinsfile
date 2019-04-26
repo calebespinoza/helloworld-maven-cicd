@@ -8,7 +8,7 @@ def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 
 node {
-    def server = Artifactory.newServer url: artifactory.server, credentialsId: jfrog.artifactory.server
+    def server = Artifactory.newServer url: 'artifactory.server', credentialsId: 'jfrog.artifactory.server'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
