@@ -10,7 +10,12 @@ def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 node {
     def server = Artifactory.newServer url: "${env.SERVER_URL}", credentialsId: "${env.CREDENTIALS}"
     def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo_1 = Artifactory.newBuildInfo()
+    def buildInfo
+
+    stage('Print Variables'){
+        echo "${env.SERVER_URL}"
+        echo "${env.CREDENTIALS}"
+    }
 
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
@@ -34,19 +39,20 @@ node {
         onlyIfSuccessful: true
     }
 
-    stage('Artifactory Configuration') {
-        rtMaven.tool = "${env.M3}"
+    stage ('Artifactory configuration') {
+        rtMaven.tool = M3 // Tool name from Jenkins configuration
         rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+        buildInfo = Artifactory.newBuildInfo()
     }
 
-    stage('Exec Maven') {
-        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo_1
+    stage ('Exec Maven') {
+        rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
 
-    /*stage('Publish build info'){
-        server.publishBuildInfo buildInfo_1
-    }*/
+    stage ('Publish build info') {
+        server.publishBuildInfo buildInfo
+    }
 
     /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
