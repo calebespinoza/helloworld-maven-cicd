@@ -10,7 +10,7 @@ def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 node {
     def server = Artifactory.newServer url: "${env.SERVER_URL}", credentialsId: "${env.CREDENTIALS}"
     def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo = Artifactory.newBuildInfo()
+    def buildInfo_1 = Artifactory.newBuildInfo()
 
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
@@ -41,11 +41,11 @@ node {
     }
 
     stage('Exec Maven') {
-        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo_1
     }
 
     /*stage('Publish build info'){
-        server.publishBuildInfo buildInfo
+        server.publishBuildInfo buildInfo_1
     }*/
 
     /*stage('Trigger Promotion') {
