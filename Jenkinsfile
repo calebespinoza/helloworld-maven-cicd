@@ -8,14 +8,9 @@ def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
 
 
 node {
-    def server = Artifactory.newServer url: "${env.SERVER_URL}", credentialsId: "${env.CREDENTIALS}"
+    def server = Artifactory.newServer url: artifactory.server, credentialsId: jfrog.artifactory.server
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
-
-    stage('Print Variables'){
-        echo "${env.SERVER_URL}"
-        echo "${env.CREDENTIALS}"
-    }
 
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
@@ -47,7 +42,7 @@ node {
     }
 
     stage ('Exec Maven') {
-        rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
 
     stage ('Publish build info') {
