@@ -59,7 +59,7 @@ node {
     	    artUsr = env.artUsername
     		artPass = env.artPassword
     	}
-    	addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${installName}")
+    	addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
     }
 
     /*stage('Trigger Promotion') {
@@ -70,6 +70,6 @@ node {
     }*/
 }
 
-def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, installName){
+def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
     sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
 }
