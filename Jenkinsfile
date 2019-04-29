@@ -6,6 +6,7 @@ def appDestination = 'CR'
 def serverQuantity = 2
 def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
+def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}'
 
 node {
     def server = Artifactory.server 'artifactory.server'
@@ -70,5 +71,5 @@ node {
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, installName){
-    sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
+    sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
 }
