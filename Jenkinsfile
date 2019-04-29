@@ -4,8 +4,8 @@ def appName = 'SbeBackEndEAR2'
 def virtualHost = 'ebac_host'
 def appDestination = 'CR'
 def serverQuantity = 2
-def dirJar = '/SbeBackEndEAR/target/SbeBackEndEAR Install Files.ear'
-
+def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
+def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 
 node {
     def server = Artifactory.server 'artifactory.server'
@@ -54,11 +54,17 @@ node {
         def artUsr
     	def artPass
     	def JenkinPass
-    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+    	withCredentials([usernamePassword(credentialsId: 'JENKINS_DEPLOYER', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
     	    artUsr = env.artPassword
     		artPass = env.artUsername
     	}
-    	//addEarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
+    	addJarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
+    }
+
+    def addJarToArtifactory(artPass, JenkinPass, dirEar, installName){
+       wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
+              sh "curl -u jenkins:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
+        }
     }
 
     /*stage('Trigger Promotion') {
