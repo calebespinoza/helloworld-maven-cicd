@@ -54,9 +54,9 @@ node {
         def artUsr
     	def artPass
     	def JenkinPass
-    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artifactory.password', usernameVariable: 'artifactory.username')]) {
-    	    artUsr = env.artifactory.username
-    		artPass = env.artifactory.password
+    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+    	    artUsr = env.artPassword
+    		artPass = env.artUsername
     	}
     	//addEarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
     }
