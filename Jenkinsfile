@@ -55,8 +55,8 @@ node {
     	def artPass
     	def JenkinPass
     	withCredentials([usernamePassword(credentialsId: 'JENKINS_DEPLOYER', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
-    	    artUsr = env.artPassword
-    		artPass = env.artUsername
+    	    artUsr = env.artUsername
+    		artPass = env.artPassword
     	}
     	addJarToArtifactory(artPass, JenkinPass, "${dirJar}","${installName}")
     }
