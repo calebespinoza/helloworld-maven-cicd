@@ -70,5 +70,5 @@ node {
 }
 
 def addJarToArtifactory(artPass, JenkinPass, dirJar, installName){
-    sh "curl -u jenkins:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
+    sh "curl -u admin:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
 }
