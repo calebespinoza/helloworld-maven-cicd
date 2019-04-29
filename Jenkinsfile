@@ -54,11 +54,11 @@ node {
         def artUsr
     	def artPass
     	def JenkinPass
-    	withCredentials([usernamePassword(credentialsId: 'JENKINS_DEPLOYER', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
     	    artUsr = env.artUsername
     		artPass = env.artPassword
     	}
-    	addJarToArtifactory(artPass, JenkinPass, "${dirJar}","${installName}")
+    	addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${installName}")
     }
 
     /*stage('Trigger Promotion') {
@@ -69,6 +69,6 @@ node {
     }*/
 }
 
-def addJarToArtifactory(artPass, JenkinPass, dirJar, installName){
-    sh "curl -u admin:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
+def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, installName){
+    sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
 }
