@@ -61,16 +61,16 @@ node {
     	addJarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
     }
 
-    def addJarToArtifactory(artPass, JenkinPass, dirEar, installName){
-       wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
-              sh "curl -u jenkins:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
-        }
-    }
-
     /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
         parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
         string(name: 'JobName', value: "${env.JOB_NAME}")]
         //echo "${env.JOB_NAME}"
     }*/
+}
+
+def addJarToArtifactory(artPass, JenkinPass, dirEar, installName){
+    wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
+    sh "curl -u jenkins:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
+    }
 }
