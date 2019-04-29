@@ -50,6 +50,17 @@ node {
         server.publishBuildInfo buildInfo
     }
 
+    stage ('Upload EARs to Artifactory by CURL'){
+        def artUsr
+    	def artPass
+    	def JenkinPass
+    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artifactory.password', usernameVariable: 'artifactory.username')]) {
+    	    artUsr = env.artifactory.username
+    		artPass = env.artifactory.password
+    	}
+    	//addEarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
+    }
+
     /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
         parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
