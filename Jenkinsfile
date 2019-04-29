@@ -69,7 +69,7 @@ node {
     }*/
 }
 
-def addJarToArtifactory(artPass, JenkinPass, dirEar, installName){
+def addJarToArtifactory(artPass, JenkinPass, dirJar, installName){
     wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
     sh "curl -u jenkins:${artPass} -s  -X PUT --data-binary ${dirJar} http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/${installName}"
     }
