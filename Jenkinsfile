@@ -58,7 +58,7 @@ node {
     	    artUsr = env.artPassword
     		artPass = env.artUsername
     	}
-    	addJarToArtifactory(artPass, JenkinPass, "${dirEar}","${installName}")
+    	addJarToArtifactory(artPass, JenkinPass, "${dirJar}","${installName}")
     }
 
     /*stage('Trigger Promotion') {
