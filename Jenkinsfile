@@ -71,6 +71,8 @@ node {
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
+
+    // You need to install Mask Passwords plugin in order to mask the password that could be showed in the console.
     wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
         sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
     }
