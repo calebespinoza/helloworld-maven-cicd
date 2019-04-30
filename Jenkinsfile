@@ -8,7 +8,7 @@ def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/' + installName
 
-node {
+node('WS19_Agent') {
     def server = Artifactory.server 'artifactory.server'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
@@ -23,11 +23,15 @@ node {
     }
 
     stage('Build') {
-        sh 'ls'
+        bat 'ls'
+        bat 'mvnw clean compile'
+        bat 'mvnw package'
+        bat 'pwd'
+        /*sh 'ls'
         sh 'chmod +x mvnw'
         sh './mvnw clean compile'
         sh './mvnw package'
-        sh 'pwd'
+        sh 'pwd'*/
     }
 
     stage('Archive Artifact') {
@@ -74,6 +78,7 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
     // You need to install Mask Passwords plugin in order to mask the password that could be showed in the console.
     wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
-        sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+        //sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+        bat "curl.exe -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
     }
 }
