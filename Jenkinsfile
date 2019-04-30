@@ -71,5 +71,7 @@ node {
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
-    sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+    wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
+        sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+    }
 }
