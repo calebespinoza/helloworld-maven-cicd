@@ -26,15 +26,18 @@ node() {
     }
 
     stage('Build') {
-        bat 'ls'
-        bat 'mvnw clean compile'
-        bat 'mvnw package'
-        bat 'pwd'
-        /*sh 'ls'
-        sh 'chmod +x mvnw'
-        sh './mvnw clean compile'
-        sh './mvnw package'
-        sh 'pwd'*/
+        if(isUnix()){
+            sh 'ls'
+            sh 'chmod +x mvnw'
+            sh './mvnw clean compile'
+            sh './mvnw package'
+            sh 'pwd'
+        } else {
+            bat 'ls'
+            bat 'mvnw clean compile'
+            bat 'mvnw package'
+            bat 'pwd'
+        }
     }
 
     stage('Archive Artifact') {
@@ -81,7 +84,10 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
     // You need to install Mask Passwords plugin in order to mask the password that could be showed in the console.
     wrap([$class: 'MaskPasswordsBuildWrapper', varPasswordPairs: [[password: "${artPass}", var: "${JenkinPass}"]]]) {
-        //sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
-        bat "curl.exe -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+        if(isUnix()) {
+            sh "curl -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+        } else {
+            bat "curl.exe -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
+        }
     }
 }
