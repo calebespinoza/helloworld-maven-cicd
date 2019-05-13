@@ -72,6 +72,11 @@ node() {
     	addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
     }
 
+    stage ('Find files modified') {
+        sh 'ls'
+        sh 'find target/ -iname "*.jar" -mtime 0'
+    }    
+
     /*stage('Trigger Promotion') {
         build job: 'Promotion1', 
         parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
