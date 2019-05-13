@@ -1,3 +1,5 @@
+#!groovy
+
 def serverBaseName = 'localhost'
 def clusterName = 'SEC3ServerCluster'
 def appName = 'SbeBackEndEAR2'
@@ -7,8 +9,9 @@ def serverQuantity = 2
 def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/' + installName
+def labelNode = 'WS19_Agent'
 
-node('WS19_Agent') {
+node() {
     def server = Artifactory.server 'artifactory.server'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
