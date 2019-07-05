@@ -101,3 +101,8 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
         }
     }
 }
+
+@NonCPS
+def getBuildUser() {
+    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+}
