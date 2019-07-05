@@ -82,7 +82,7 @@ node() {
     stage ('Slack Notifications') {
         slackSend channel: 'chat-ops', 
         iconEmoji: '', 
-        message: 'Started ' + env.JOB_NAME + ' ' + env.BUILD_NUMBER + '(<${env.BUILD_URL}|Open>)', 
+        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAMEX + ' Started by ' + (<${env.BUILD_URL}|Open>), 
         teamDomain: 'calebespinoza', 
         tokenCredentialId: 'slack-notifications', 
         username: ''
