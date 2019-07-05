@@ -83,6 +83,15 @@ node() {
         string(name: 'JobName', value: "${env.JOB_NAME}")]
         //echo "${env.JOB_NAME}"
     }*/
+
+    stage ('Slack Notifications') {
+        slackSend channel: 'chat-ops', 
+        iconEmoji: '', 
+        message: 'started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)', 
+        teamDomain: 'calebespinoza', 
+        tokenCredentialId: 'slack-notifications', 
+        username: ''
+    }
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
