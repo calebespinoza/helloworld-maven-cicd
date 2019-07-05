@@ -11,6 +11,16 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
+    stage ('Slack Notifications') {
+        slackSend channel: 'chat-ops', 
+        color: "#439FE0", 
+        iconEmoji: '', 
+        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + env.BUILD_USER_NAME + ' (<' + env.BUILD_URL + '|Open>)', 
+        teamDomain: 'calebespinoza', 
+        tokenCredentialId: 'slack-notifications', 
+        username: ''
+    }
+
     stage('Clone Code') {
         checkout([$class: 'GitSCM', 
         branches: [[name: '*/master']], 
@@ -78,16 +88,6 @@ node() {
         string(name: 'JobName', value: "${env.JOB_NAME}")]
         //echo "${env.JOB_NAME}"
     }*/
-
-    stage ('Slack Notifications') {
-        slackSend channel: 'chat-ops', 
-        color: "#439FE0", 
-        iconEmoji: '', 
-        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + env.BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
-        teamDomain: 'calebespinoza', 
-        tokenCredentialId: 'slack-notifications', 
-        username: ''
-    }
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
