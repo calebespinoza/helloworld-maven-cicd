@@ -11,83 +11,92 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    stage ('Slack Notifications') {
-        slackSend channel: 'chat-ops', 
-        color: "#439FE0", 
-        iconEmoji: '', 
-        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by someone (<' + env.BUILD_URL + '|Open>)', 
-        teamDomain: 'calebespinoza', 
-        tokenCredentialId: 'slack-notifications', 
-        username: ''
-    }
+    try {
+        
+        stage ('Slack Notifications') {
+            slackSend channel: 'chat-ops', 
+            color: "#439FE0", 
+            iconEmoji: '', 
+            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by someone (<' + env.BUILD_URL + '|Open>)', 
+            teamDomain: 'calebespinoza', 
+            tokenCredentialId: 'slack-notifications', 
+            username: ''
+        }   
 
-    stage('Clone Code') {
-        checkout([$class: 'GitSCM', 
-        branches: [[name: '*/master']], 
-        doGenerateSubmoduleConfigurations: false, 
-        extensions: [], 
-        submoduleCfg: [], 
-        userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
-    }
-
-    stage('Build') {
-        if(isUnix()){
-            sh 'ls'
-            sh 'chmod +x mvnw'
-            sh './mvnw clean compile'
-            sh './mvnw package'
-            sh 'pwd'
-        } else {
-            bat 'ls'
-            bat 'mvnw clean compile'
-            bat 'mvnw package'
-            bat 'pwd'
+        stage('Clone Code') {
+            checkout([$class: 'GitSCM', 
+            branches: [[name: '*/master']], 
+            doGenerateSubmoduleConfigurations: false, 
+            extensions: [], 
+            submoduleCfg: [], 
+            userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
         }
+
+        stage('Build') {
+            if(isUnix()){
+                sh 'ls'
+                sh 'chmod +x mvnw'
+                sh './mvnw clean compile'
+                sh './mvnw package'
+                sh 'pwd'
+            } else {
+                bat 'ls'
+                bat 'mvnw clean compile'
+                bat 'mvnw package'
+                bat 'pwd'
+            }
+        }
+
+        stage('Archive Artifact') {
+            archiveArtifacts artifacts: '**/target/*.jar', 
+            fingerprint: true, 
+            onlyIfSuccessful: true
+        }
+
+        stage ('Artifactory configuration') {
+            rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            buildInfo = Artifactory.newBuildInfo()
+        }
+
+        stage ('Exec Maven') {
+            rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
+        }
+
+        stage ('Publish build info') {
+            server.publishBuildInfo buildInfo
+        }
+
+        stage ('Upload EARs to Artifactory by CURL'){
+            def artUsr
+            def artPass
+            def JenkinPass
+            withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+                artUsr = env.artUsername
+                artPass = env.artPassword
+            }
+            addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
+        }
+
+        stage ('Find files modified') {
+            sh 'ls'
+            sh 'find target/ -iname "*.jar" -mtime 0'
+        }    
+
+        /*stage('Trigger Promotion') {
+            build job: 'Promotion1', 
+            parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
+            string(name: 'JobName', value: "${env.JOB_NAME}")]
+            //echo "${env.JOB_NAME}"
+        }*/
+
+        notifyBuildStatus("SUCCESS", "#98FB98")
+
+    } catch (e) {
+        notifyBuildStatus("FAILED", "#FF0000")
     }
-
-    stage('Archive Artifact') {
-        archiveArtifacts artifacts: '**/target/*.jar', 
-        fingerprint: true, 
-        onlyIfSuccessful: true
-    }
-
-    stage ('Artifactory configuration') {
-        rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
-        rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-        rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-        buildInfo = Artifactory.newBuildInfo()
-    }
-
-    stage ('Exec Maven') {
-        rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
-    }
-
-    stage ('Publish build info') {
-        server.publishBuildInfo buildInfo
-    }
-
-    stage ('Upload EARs to Artifactory by CURL'){
-        def artUsr
-    	def artPass
-    	def JenkinPass
-    	withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
-    	    artUsr = env.artUsername
-    		artPass = env.artPassword
-    	}
-    	addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
-    }
-
-    stage ('Find files modified') {
-        sh 'ls'
-        sh 'find target/ -iname "*.jar" -mtime 0'
-    }    
-
-    /*stage('Trigger Promotion') {
-        build job: 'Promotion1', 
-        parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
-        string(name: 'JobName', value: "${env.JOB_NAME}")]
-        //echo "${env.JOB_NAME}"
-    }*/
+    
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
@@ -100,6 +109,16 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
             bat "curl.exe -u ${artUsr}:${artPass} -s  -X PUT --data-binary ${dirJar} ${finalDest}"
         }
     }
+}
+
+def notifyBuildStatus(message, colorStatus) {
+    slackSend channel: 'chat-ops', 
+    color: colorStatus, 
+    iconEmoji: '', 
+    message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Status ' + message + ' (<' + env.BUILD_URL + '|Open>)', 
+    teamDomain: 'calebespinoza', 
+    tokenCredentialId: 'slack-notifications', 
+    username: ''
 }
 
 @NonCPS
