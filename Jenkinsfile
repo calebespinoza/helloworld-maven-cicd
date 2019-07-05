@@ -15,7 +15,7 @@ node() {
         slackSend channel: 'chat-ops', 
         color: "#439FE0", 
         iconEmoji: '', 
-        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + getBuildUser() + ' (<' + env.BUILD_URL + '|Open>)', 
+        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by someone (<' + env.BUILD_URL + 'display/redirect|Open>)', 
         teamDomain: 'calebespinoza', 
         tokenCredentialId: 'slack-notifications', 
         username: ''
