@@ -1,11 +1,6 @@
 #!groovy
 
 def serverBaseName = 'localhost'
-def clusterName = 'SEC3ServerCluster'
-def appName = 'SbeBackEndEAR2'
-def virtualHost = 'ebac_host'
-def appDestination = 'CR'
-def serverQuantity = 2
 def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/' + installName
@@ -87,7 +82,7 @@ node() {
     stage ('Slack Notifications') {
         slackSend channel: 'chat-ops', 
         iconEmoji: '', 
-        message: 'started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)', 
+        message: 'Started ' + ${env.JOB_NAME} + ' ' + ${env.BUILD_NUMBER} + '(<${env.BUILD_URL}|Open>)', 
         teamDomain: 'calebespinoza', 
         tokenCredentialId: 'slack-notifications', 
         username: ''
