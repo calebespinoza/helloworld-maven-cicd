@@ -80,9 +80,10 @@ node() {
     }*/
 
     stage ('Slack Notifications') {
+        color: "#439FE0",
         slackSend channel: 'chat-ops', 
         iconEmoji: '', 
-        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by (' + env.BUILD_URL|Open + ')', 
+        message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by (' + env.BUILD_URL + ')', 
         teamDomain: 'calebespinoza', 
         tokenCredentialId: 'slack-notifications', 
         username: ''
