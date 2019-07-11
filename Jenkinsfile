@@ -12,12 +12,16 @@ node() {
     def buildInfo
 
     try {
+        environment {
+            BUILD_USER = ''
+        }
         
         stage ('Slack Notifications') {
+            BUILD_USER = getBuildUser()
             slackSend channel: 'chat-ops', 
             color: "#439FE0", 
             iconEmoji: '', 
-            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + env.CHANGE_AUTHOR_DISPLAY_NAME + ' (<' + env.BUILD_URL + '|Open>)', 
+            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
             teamDomain: 'calebespinoza', 
             tokenCredentialId: 'slack-notifications', 
             username: ''
@@ -112,13 +116,13 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 }
 
 def notifyBuildStatus(message, colorStatus) {
-    slackSend channel: 'chat-ops', 
+    /*slackSend channel: 'chat-ops', 
     color: colorStatus, 
     iconEmoji: '', 
     message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + message + ' (<' + env.BUILD_URL + '|Open>)', 
     teamDomain: 'calebespinoza', 
     tokenCredentialId: 'slack-notifications', 
-    username: ''
+    username: ''*/
 }
 
 @NonCPS
