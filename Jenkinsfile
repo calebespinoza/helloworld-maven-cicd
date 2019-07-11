@@ -89,9 +89,9 @@ node() {
         }    
 
         stage('Slack Message') {
-                script {
+                //script {
                     BUILD_USER = getBuildUser()
-                }
+                //}
                 slackSend channel: '#chat-ops',
                     color: 'good',
                     message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
