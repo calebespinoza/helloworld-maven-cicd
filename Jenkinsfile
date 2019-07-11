@@ -58,9 +58,9 @@ node() {
         }
 
         stage ('Artifactory configuration') {
-            rtMaven.tool = 'Maven_Local1' // Tool name from Jenkins configuration
-            rtMaven.deployer releaseRepo: 'libs-release-local1', snapshotRepo: 'libs-snapshot-local', server: server
-            rtMaven.resolver releaseRepo: 'libs-release1', snapshotRepo: 'libs-snapshot', server: server
+            rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
         }
 
