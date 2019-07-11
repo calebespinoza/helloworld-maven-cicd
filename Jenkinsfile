@@ -89,12 +89,13 @@ node() {
         }    
 
         stage('Slack Message') {
+            notifyBuildStatus(currentBuild.currentResult)
                 //script {
-                    BUILD_USER = getBuildUser()
+                //    BUILD_USER = getBuildUser()
                 //}
-                slackSend channel: '#chat-ops',
-                    color: 'good',
-                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
+                //slackSend channel: '#chat-ops',
+                //    color: 'good',
+                //    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
         }
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
@@ -123,7 +124,7 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
     }
 }
 
-def notifyBuildStatus(message, colorStatus, buildResult) {
+def notifyBuildStatus(buildResult) {
     /*slackSend channel: 'chat-ops', 
     color: colorStatus, 
     iconEmoji: '', 
