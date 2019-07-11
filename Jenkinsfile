@@ -88,7 +88,7 @@ node() {
             sh 'find target/ -iname "*.jar" -mtime 0'
         }    
 
-        notifyBuildStatus(currentBuild.currentResult)
+        notifyBuildStatus(currentBuild.result)
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
             parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
@@ -100,7 +100,7 @@ node() {
 
     } catch (e) {
         //notifyBuildStatus("FAILED", "#FF0000")
-        notifyBuildStatus(currentBuild.currentResult)
+        notifyBuildStatus(currentBuild.result)
     }
     
 }
