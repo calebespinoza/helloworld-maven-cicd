@@ -105,7 +105,7 @@ node() {
     }
     echo "RESULT: ${currentBuild.currentResult}"
 }
-
+echo "RESULT: ${currentBuild.currentResult}"
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
     // You need to install Mask Passwords plugin in order to mask the password that could be showed in the console.
