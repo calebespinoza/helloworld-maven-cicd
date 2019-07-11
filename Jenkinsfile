@@ -100,6 +100,7 @@ node() {
 
     } catch (e) {
         //notifyBuildStatus("FAILED", "#FF0000")
+        sleep(5000)
         notifyBuildStatus(currentBuild.result)
     }
     
