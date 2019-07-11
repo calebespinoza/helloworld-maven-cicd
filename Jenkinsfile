@@ -11,16 +11,20 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    try {
+    //try {
         environment {
             BUILD_USER = ''
         }
         
         stage ('Slack Notifications') {
             BUILD_USER = getBuildUser()
-            slackSend color: "#439FE0", 
+            slackSend channel: 'chat-ops', 
+            color: "#439FE0", 
             iconEmoji: ':+1', 
-            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)'
+            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
+            teamDomain: 'calebespinoza', 
+            tokenCredentialId: 'slack-notifications', 
+            username: ''
         }   
 
         stage('Clone Code') {
@@ -35,7 +39,7 @@ node() {
         stage('Build') {
             if(isUnix()){
                 sh 'ls'
-                //sh 'chmod +x mvnw'
+                sh 'chmod +x mvnw'
                 sh './mvnw clean compile'
                 sh './mvnw package'
                 sh 'pwd'
@@ -84,9 +88,9 @@ node() {
             sh 'find target/ -iname "*.jar" -mtime 0'
         }
 
-    } catch (e) {
-        currentBuild.result = ""
-    }
+    //} catch (e) {
+    //    currentBuild.result = ""
+    //}
 }
 
 echo "RESULT: ${currentBuild.currentResult}"
