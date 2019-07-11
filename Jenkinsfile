@@ -102,9 +102,9 @@ node() {
         //notifyBuildStatus("FAILED", "#FF0000")
         //Thread.sleep(5000)
         notifyBuildStatus(currentBuild.result)
+        currentBuild.currentResult = ""
     }
     echo "RESULT: ${currentBuild.currentResult}"
-    currentBuild.currentResult = ""
 }
 echo "RESULT: ${currentBuild.currentResult}"
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
