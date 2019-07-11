@@ -11,7 +11,7 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    //try {
+    try {
         environment {
             BUILD_USER = ''
         }
@@ -98,13 +98,12 @@ node() {
 
         //notifyBuildStatus("SUCCESS", "#98FB98")
 
-    //} catch (e) {
-    //    notifyBuildStatus("FAILED", "#FF0000")
-    //}
+    } catch (e) {
+        //notifyBuildStatus("FAILED", "#FF0000")
+        notifyBuildStatus(currentBuild.currentResult)
+    }
     
 }
-
-notifyBuildStatus(currentBuild.currentResult)
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
