@@ -88,7 +88,7 @@ node() {
             sh 'find target/ -iname "*.jar" -mtime 0'
         }    
 
-        notifyBuildStatus(currentBuild.result)
+        //notifyBuildStatus(currentBuild.result)
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
             parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
