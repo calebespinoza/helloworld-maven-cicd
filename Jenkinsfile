@@ -103,7 +103,7 @@ node() {
         //Thread.sleep(5000)
         notifyBuildStatus(currentBuild.result)
     }
-    
+    echo "RESULT: ${currentBuild.result}"
 }
 
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
