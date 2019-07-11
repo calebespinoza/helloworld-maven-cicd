@@ -89,12 +89,10 @@ node() {
         }    
 
         stage('Slack Message') {
-                script {
-                    BUILD_USER = getBuildUser()
-                }
+                BUILD_USER = getBuildUser()
                 slackSend channel: '#jenkins',
-                    color: 'good',
-                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
+                color: 'good',
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
         }
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
