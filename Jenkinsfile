@@ -88,8 +88,9 @@ node() {
             sh 'find target/ -iname "*.jar" -mtime 0'
         }    
 
+        notifyBuildStatus(currentBuild.currentResult)
         stage('Slack Message') {
-            notifyBuildStatus(currentBuild.currentResult)
+            
                 //script {
                 //    BUILD_USER = getBuildUser()
                 //}
