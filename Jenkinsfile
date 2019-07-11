@@ -18,13 +18,9 @@ node() {
         
         stage ('Slack Notifications') {
             BUILD_USER = getBuildUser()
-            slackSend channel: 'chat-ops', 
-            color: "#439FE0", 
+            slackSend color: "#439FE0", 
             iconEmoji: ':+1', 
-            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
-            teamDomain: 'calebespinoza', 
-            tokenCredentialId: 'slack-notifications', 
-            username: ''
+            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)'
         }   
 
         stage('Clone Code') {
