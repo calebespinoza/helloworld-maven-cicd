@@ -39,7 +39,7 @@ node() {
         stage('Build') {
             if(isUnix()){
                 sh 'ls'
-                //sh 'chmod +x mvnw'
+                sh 'chmod +x mvnw'
                 sh './mvnw clean compile'
                 sh './mvnw package'
                 sh 'pwd'
@@ -58,9 +58,9 @@ node() {
         }
 
         stage ('Artifactory configuration') {
-            rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            rtMaven.tool = 'Maven_Local1' // Tool name from Jenkins configuration
+            rtMaven.deployer releaseRepo: 'libs-release-local1', snapshotRepo: 'libs-snapshot-local', server: server
+            rtMaven.resolver releaseRepo: 'libs-release1', snapshotRepo: 'libs-snapshot', server: server
             buildInfo = Artifactory.newBuildInfo()
         }
 
@@ -135,7 +135,7 @@ def notifyBuildStatus(buildResult) {
     } else if( buildResult == "UNSTABLE" ) { 
         slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
     } else {
-        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its resulat was unclear"	
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its result was unclear"	
     }
 }
 
