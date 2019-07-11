@@ -86,26 +86,13 @@ node() {
         stage ('Find files modified') {
             sh 'ls'
             sh 'find target/ -iname "*.jar" -mtime 0'
-        }    
-
-        //notifyBuildStatus(currentBuild.result)
-        /*stage('Trigger Promotion') {
-            build job: 'Promotion1', 
-            parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
-            string(name: 'JobName', value: "${env.JOB_NAME}")]
-            //echo "${env.JOB_NAME}"
-        }*/
-
-        //notifyBuildStatus("SUCCESS", "#98FB98")
-
+        }
+        
     } catch (e) {
-        //notifyBuildStatus("FAILED", "#FF0000")
-        //Thread.sleep(5000)
-        //notifyBuildStatus(currentBuild.result)
         currentBuild.result = ""
     }
-    //echo "RESULT: ${currentBuild.currentResult}"
 }
+
 echo "RESULT: ${currentBuild.currentResult}"
 notifyBuildStatus(currentBuild.currentResult)
 
