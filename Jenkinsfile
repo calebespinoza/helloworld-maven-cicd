@@ -101,13 +101,13 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
 def notifyBuildStatus(buildResult) {
     if ( buildResult == "SUCCESS" ) {
-        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + currentBuild.duration / 1000 + "sec."
+        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + (currentBuild.duration * 0.001) / 60 + " sec."
     } else if( buildResult == "FAILURE" ) { 
-        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + "sec."
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + " sec."
     } else if( buildResult == "UNSTABLE" ) { 
-        slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable after " + currentBuild.duration / 1000 + "sec."
+        slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable after " + currentBuild.duration / 1000 + " sec."
     } else {
-        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its result was unclear afer " + currentBuild.duration / 1000 + "sec."
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its result was unclear after " + currentBuild.duration / 1000 + " sec."
     }
 }
 
