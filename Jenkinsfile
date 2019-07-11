@@ -39,7 +39,7 @@ node() {
         stage('Build') {
             if(isUnix()){
                 sh 'ls'
-                //sh 'chmod +x mvnw'
+                sh 'chmod +x mvnw'
                 sh './mvnw clean compile'
                 sh './mvnw package'
                 sh 'pwd'
@@ -89,15 +89,6 @@ node() {
         }    
 
         notifyBuildStatus(currentBuild.currentResult)
-        stage('Slack Message') {
-            
-                //script {
-                //    BUILD_USER = getBuildUser()
-                //}
-                //slackSend channel: '#chat-ops',
-                //    color: 'good',
-                //    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
-        }
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
             parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
