@@ -11,92 +11,82 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    //try {
-        environment {
-            BUILD_USER = ''
-        }
-        
-        stage ('Slack Notifications') {
-            BUILD_USER = getBuildUser()
-            slackSend channel: 'chat-ops', 
-            color: "#439FE0", 
-            iconEmoji: ':+1', 
-            message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
-            teamDomain: 'calebespinoza', 
-            tokenCredentialId: 'slack-notifications', 
-            username: ''
-        }   
+    environment {
+        BUILD_USER = ''
+    }
+    
+    stage ('Slack Notifications') {
+        BUILD_USER = getBuildUser()
+        slackSend channel: 'chat-ops', 
+        color: "#439FE0", 
+        iconEmoji: ':+1', 
+        message: "slack-notification: Build #${env.BUILD_NUMBER} ${env.JOB_NAME} + ' Started by ${BUILD_USER} (<'${env.BUILD_URL}|Open>)", 
+        teamDomain: 'calebespinoza', 
+        tokenCredentialId: 'slack-notifications', 
+        username: ''
+    }   
 
-        stage('Clone Code') {
-            checkout([$class: 'GitSCM', 
-            branches: [[name: '*/master']], 
-            doGenerateSubmoduleConfigurations: false, 
-            extensions: [], 
-            submoduleCfg: [], 
-            userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
-        }
-
-        stage('Build') {
-            if(isUnix()){
-                sh 'ls'
-                sh 'chmod +x mvnw'
-                sh './mvnw clean compile'
-                sh './mvnw package'
-                sh 'pwd'
-            } else {
-                bat 'ls'
-                bat 'mvnw clean compile'
-                bat 'mvnw package'
-                bat 'pwd'
-            }
-        }
-
-        stage('Archive Artifact') {
-            archiveArtifacts artifacts: '**/target/*.jar', 
-            fingerprint: true, 
-            onlyIfSuccessful: true
-        }
-
-        stage ('Artifactory configuration') {
-            rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
-            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-            buildInfo = Artifactory.newBuildInfo()
-        }
-
-        stage ('Exec Maven') {
-            rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
-        }
-
-        stage ('Publish build info') {
-            server.publishBuildInfo buildInfo
-        }
-
-        stage ('Upload EARs to Artifactory by CURL'){
-            def artUsr
-            def artPass
-            def JenkinPass
-            withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
-                artUsr = env.artUsername
-                artPass = env.artPassword
-            }
-            addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
-        }
-
-        stage ('Find files modified') {
+    stage('Clone Code') {
+        checkout([$class: 'GitSCM', 
+        branches: [[name: '*/master']], 
+        doGenerateSubmoduleConfigurations: false, 
+        extensions: [], 
+        submoduleCfg: [], 
+        userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
+    }
+    stage('Build') {
+        if(isUnix()){
             sh 'ls'
-            sh 'find target/ -iname "*.jar" -mtime 0'
+            sh 'chmod +x mvnw'
+            sh './mvnw clean compile'
+            sh './mvnw package'
+            sh 'pwd'
+        } else {
+            bat 'ls'
+            bat 'mvnw clean compile'
+            bat 'mvnw package'
+            bat 'pwd'
         }
+    }
 
-    //} catch (e) {
-    //    currentBuild.result = ""
-    //}
+    stage('Archive Artifact') {
+        archiveArtifacts artifacts: '**/target/*.jar', 
+        fingerprint: true, 
+        onlyIfSuccessful: true
+    }
+    stage ('Artifactory configuration') {
+        rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
+        rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+        rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+        buildInfo = Artifactory.newBuildInfo()
+    }
+    stage ('Exec Maven') {
+        rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
+    }
+    stage ('Publish build info') {
+        server.publishBuildInfo buildInfo
+    }
+    stage ('Upload EARs to Artifactory by CURL'){
+        def artUsr
+        def artPass
+        def JenkinPass
+        withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+            artUsr = env.artUsername
+            artPass = env.artPassword
+        }
+        addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
+    }
+
+    stage ('Find files modified') {
+        sh 'ls'
+        sh 'find target/ -iname "*.jar" -mtime 0'
+    }
 }
 
-echo "RESULT: ${currentBuild.currentResult}"
+// Send Slack Notifications
 notifyBuildStatus(currentBuild.currentResult)
 
-
+// FUNCTIONS Section
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
     // You need to install Mask Passwords plugin in order to mask the password that could be showed in the console.
@@ -111,7 +101,7 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 
 def notifyBuildStatus(buildResult) {
     if ( buildResult == "SUCCESS" ) {
-        slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful"
     } else if( buildResult == "FAILURE" ) { 
         slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed"
     } else if( buildResult == "UNSTABLE" ) { 
