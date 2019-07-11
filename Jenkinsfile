@@ -20,7 +20,7 @@ node() {
             BUILD_USER = getBuildUser()
             slackSend channel: 'chat-ops', 
             color: "#439FE0", 
-            iconEmoji: '', 
+            iconEmoji: ':+1', 
             message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + env.JOB_NAME + ' Started by ' + BUILD_USER + ' (<' + env.BUILD_URL + '|Open>)', 
             teamDomain: 'calebespinoza', 
             tokenCredentialId: 'slack-notifications', 
