@@ -11,7 +11,7 @@ node() {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 
-    try {
+    //try {
         environment {
             BUILD_USER = ''
         }
@@ -88,6 +88,17 @@ node() {
             sh 'find target/ -iname "*.jar" -mtime 0'
         }    
 
+        stage('Slack Message') {
+            steps {
+                script {
+                    BUILD_USER = getBuildUser()
+                }
+                slackSend channel: '#jenkins',
+                    color: 'good',
+                    message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} by ${BUILD_USER}\n More info at: ${env.BUILD_URL}"
+            
+            }
+        }
         /*stage('Trigger Promotion') {
             build job: 'Promotion1', 
             parameters: [string(name: 'serverBaseName1', value: "${serverBaseName}"),
@@ -95,11 +106,11 @@ node() {
             //echo "${env.JOB_NAME}"
         }*/
 
-        notifyBuildStatus("SUCCESS", "#98FB98")
+        //notifyBuildStatus("SUCCESS", "#98FB98")
 
-    } catch (e) {
-        notifyBuildStatus("FAILED", "#FF0000")
-    }
+    //} catch (e) {
+    //    notifyBuildStatus("FAILED", "#FF0000")
+    //}
     
 }
 
@@ -115,7 +126,7 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
     }
 }
 
-def notifyBuildStatus(message, colorStatus) {
+def notifyBuildStatus(message, colorStatus, buildResult) {
     /*slackSend channel: 'chat-ops', 
     color: colorStatus, 
     iconEmoji: '', 
@@ -123,6 +134,16 @@ def notifyBuildStatus(message, colorStatus) {
     teamDomain: 'calebespinoza', 
     tokenCredentialId: 'slack-notifications', 
     username: ''*/
+
+    if ( buildResult == "SUCCESS" ) {
+        slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
+    } else if( buildResult == "FAILURE" ) { 
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed"
+    } else if( buildResult == "UNSTABLE" ) { 
+        slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable"
+    } else {
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its resulat was unclear"	
+    }
 }
 
 @NonCPS
