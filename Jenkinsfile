@@ -100,7 +100,7 @@ node() {
 
     } catch (e) {
         //notifyBuildStatus("FAILED", "#FF0000")
-        Thread.sleep(5000)
+        //Thread.sleep(5000)
         notifyBuildStatus(currentBuild.result)
     }
     
