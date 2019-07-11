@@ -102,7 +102,7 @@ node() {
         //notifyBuildStatus("FAILED", "#FF0000")
         //Thread.sleep(5000)
         notifyBuildStatus(currentBuild.result)
-        currentBuild.currentResult = ""
+        currentBuild.result = ""
     }
     echo "RESULT: ${currentBuild.currentResult}"
 }
