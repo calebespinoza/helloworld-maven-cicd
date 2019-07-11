@@ -84,7 +84,7 @@ node() {
 }
 
 // Send Slack Notifications
-notifyBuildStatus(currentBuild.currentResult)
+notifyBuildStatus(currentBuild.currentResult, currentBuild.duration * 0.001) / 60)
 
 // FUNCTIONS Section
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
@@ -99,9 +99,9 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
     }
 }
 
-def notifyBuildStatus(buildResult) {
+def notifyBuildStatus(buildResult, time) {
     if ( buildResult == "SUCCESS" ) {
-        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + (currentBuild.duration * 0.001) / 60 + " sec."
+        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + Math.round(time) + " min."
     } else if( buildResult == "FAILURE" ) { 
         slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + " sec."
     } else if( buildResult == "UNSTABLE" ) { 
