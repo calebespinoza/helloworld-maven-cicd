@@ -1,5 +1,5 @@
-import java.lang.Math; 
 #!groovy
+import java.lang.Math; 
 
 def serverBaseName = 'localhost'
 def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
