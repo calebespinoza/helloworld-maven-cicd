@@ -99,9 +99,9 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
     }
 }
 
-def notifyBuildStatus(buildResult, time * 0.001) {
+def notifyBuildStatus(buildResult, time) {
     if ( buildResult == "SUCCESS" ) {
-        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + Math.round(time / 60) + " min."
+        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + Math.round((time * 0.001) / 60) + " min."
     } else if( buildResult == "FAILURE" ) { 
         slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + " sec."
     } else if( buildResult == "UNSTABLE" ) { 
