@@ -87,7 +87,7 @@ node() {
             sh 'ls'
             sh 'find target/ -iname "*.jar" -mtime 0'
         }
-        
+
     } catch (e) {
         currentBuild.result = ""
     }
@@ -110,14 +110,6 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 }
 
 def notifyBuildStatus(buildResult) {
-    /*slackSend channel: 'chat-ops', 
-    color: colorStatus, 
-    iconEmoji: '', 
-    message: 'slack-notification #' + env.BUILD_NUMBER + ' ' + message + ' (<' + env.BUILD_URL + '|Open>)', 
-    teamDomain: 'calebespinoza', 
-    tokenCredentialId: 'slack-notifications', 
-    username: ''*/
-
     if ( buildResult == "SUCCESS" ) {
         slackSend color: "good", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was successful"
     } else if( buildResult == "FAILURE" ) { 
