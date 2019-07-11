@@ -1,3 +1,4 @@
+import java.lang.Math; 
 #!groovy
 
 def serverBaseName = 'localhost'
