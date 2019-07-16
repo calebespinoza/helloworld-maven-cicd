@@ -84,8 +84,13 @@ node() {
     }
 }
 
-// Send Slack Notifications
-notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+try {
+    // Send Slack Notifications
+    notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+} catch (Exception e) {
+    echo "Error"
+}
+
 
 // FUNCTIONS Section
 def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
