@@ -9,82 +9,81 @@ def labelNode = 'WS19_Agent'
 
 node() {
     try {
-    def server = Artifactory.server 'artifactory.server'
-    def rtMaven = Artifactory.newMavenBuild()
-    def buildInfo
+        def server = Artifactory.server 'artifactory.server'
+        def rtMaven = Artifactory.newMavenBuild()
+        def buildInfo
 
-    environment {
-        BUILD_USER = ''
-    }
-    
-    stage ('Slack Notifications') {
-        BUILD_USER = getBuildUser()
-        slackSend channel: 'chat-ops', 
-        color: "#439FE0", 
-        iconEmoji: ':+1', 
-        message: "slack-notification: Build #${env.BUILD_NUMBER} ${env.JOB_NAME} Started by ${BUILD_USER} (<${env.BUILD_URL}|Open>)", 
-        teamDomain: 'calebespinoza', 
-        tokenCredentialId: 'slack-notifications', 
-        username: ''
-    }   
+        environment {
+            BUILD_USER = ''
+        }
+        
+        stage ('Slack Notifications') {
+            BUILD_USER = getBuildUser()
+            slackSend channel: 'chat-ops', 
+            color: "#439FE0", 
+            iconEmoji: ':+1', 
+            message: "slack-notification: Build #${env.BUILD_NUMBER} ${env.JOB_NAME} Started by ${BUILD_USER} (<${env.BUILD_URL}|Open>)", 
+            teamDomain: 'calebespinoza', 
+            tokenCredentialId: 'slack-notifications', 
+            username: ''
+        }   
 
-    stage('Clone Code') {
-        checkout([$class: 'GitSCM', 
-        branches: [[name: '*/master']], 
-        doGenerateSubmoduleConfigurations: false, 
-        extensions: [], 
-        submoduleCfg: [], 
-        userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
-    }
-    stage('Build') {
-        if(isUnix()){
+        stage('Clone Code') {
+            checkout([$class: 'GitSCM', 
+            branches: [[name: '*/master']], 
+            doGenerateSubmoduleConfigurations: false, 
+            extensions: [], 
+            submoduleCfg: [], 
+            userRemoteConfigs: [[url: 'https://gitlab.com/calebespinoza/hello-world-maven.git']]])
+        }
+        stage('Build') {
+            if(isUnix()){
+                sh 'ls'
+                sh 'chmod +x mvnw'
+                sh './mvnw clean compile'
+                sh './mvnw package'
+                sh 'pwd'
+            } else {
+                bat 'ls'
+                bat 'mvnw clean compile'
+                bat 'mvnw package'
+                bat 'pwd'
+            }
+        }
+
+        stage('Archive Artifact') {
+            archiveArtifacts artifacts: '**/target/*.jar', 
+            fingerprint: true, 
+            onlyIfSuccessful: true
+        }
+        stage ('Artifactory configuration') {
+            rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
+            rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+            rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+            buildInfo = Artifactory.newBuildInfo()
+        }
+        stage ('Exec Maven') {
+            rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
+        }
+        stage ('Publish build info') {
+            server.publishBuildInfo buildInfo
+        }
+        stage ('Upload EARs to Artifactory by CURL'){
+            def artUsr
+            def artPass
+            def JenkinPass
+            withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+                artUsr = env.artUsername
+                artPass = env.artPassword
+            }
+            addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
+        }
+
+        stage ('Find files modified') {
             sh 'ls'
-            sh 'chmod +x mvnw'
-            sh './mvnw clean compile'
-            sh './mvnw package'
-            sh 'pwd'
-        } else {
-            bat 'ls'
-            bat 'mvnw clean compile'
-            bat 'mvnw package'
-            bat 'pwd'
+            sh 'find target/ -iname "*.jar" -mtime 0'
         }
-    }
-
-    stage('Archive Artifact') {
-        archiveArtifacts artifacts: '**/target/*.jar', 
-        fingerprint: true, 
-        onlyIfSuccessful: true
-    }
-    stage ('Artifactory configuration') {
-        rtMaven.tool = 'Maven_Local' // Tool name from Jenkins configuration
-        rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-        rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
-        buildInfo = Artifactory.newBuildInfo()
-    }
-    stage ('Exec Maven') {
-        rtMaven.run pom: '', goals: 'clean install', buildInfo: buildInfo
-    }
-    stage ('Publish build info') {
-        server.publishBuildInfo buildInfo
-    }
-    stage ('Upload EARs to Artifactory by CURL'){
-        def artUsr
-        def artPass
-        def JenkinPass
-        withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server1', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
-            artUsr = env.artUsername
-            artPass = env.artPassword
-        }
-        addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
-    }
-
-    stage ('Find files modified') {
-        sh 'ls'
-        sh 'find target/ -iname "*.jar" -mtime 0'
-    }
     } catch (Exception e) {
-        //currentBuild.currentResult = "FAILURE"
         currentBuild.result = "FAILED"
     }
 }
@@ -112,11 +111,11 @@ def notifyBuildStatus(buildResult, time) {
     if ( buildResult == "SUCCESS" ) {
         slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + ((float)timePipeline).round(2) + " min."
     } else if( buildResult == "FAILURE" ) { 
-        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + " sec."
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + ((float)timePipeline).round(2) + " min."
     } else if( buildResult == "UNSTABLE" ) { 
-        slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable after " + currentBuild.duration / 1000 + " sec."
+        slackSend color: "warning", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was unstable after " + ((float)timePipeline).round(2) + " min."
     } else {
-        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its result was unclear after " + currentBuild.duration / 1000 + " sec."
+        slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} its result was unclear after " + ((float)timePipeline).round(2) + " min."
     }
 }
 
