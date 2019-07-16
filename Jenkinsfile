@@ -89,6 +89,7 @@ node() {
     notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 } catch (Exception e) {
     echo "Error"
+    notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 }
 
 
