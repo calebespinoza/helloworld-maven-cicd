@@ -39,7 +39,7 @@ node() {
     stage('Build') {
         if(isUnix()){
             sh 'ls'
-            sh 'chmod +x mvnw'
+            //sh 'chmod +x mvnw'
             sh './mvnw clean compile'
             sh './mvnw package'
             sh 'pwd'
@@ -72,7 +72,7 @@ node() {
         def artUsr
         def artPass
         def JenkinPass
-        withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
+        withCredentials([usernamePassword(credentialsId: 'jfrog.artifactory.server1', passwordVariable: 'artPassword', usernameVariable: 'artUsername')]) {
             artUsr = env.artUsername
             artPass = env.artPassword
         }
@@ -83,10 +83,9 @@ node() {
         sh 'ls'
         sh 'find target/ -iname "*.jar" -mtime 0'
     }
-
     } catch (Exception e) {
         //currentBuild.currentResult = "FAILURE"
-        currentBuild.result = "FAILURE"
+        currentBuild.result = "FAILED"
     }
 }
 
@@ -111,7 +110,7 @@ def addJarToArtifactory(artUsr, artPass, JenkinPass, dirJar, finalDest){
 def notifyBuildStatus(buildResult, time) {
     def timePipeline = time * 0.001 / 60
     if ( buildResult == "SUCCESS" ) {
-        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + timePipeline.round(2) + " min."
+        slackSend color: "good", message: "Build #${env.BUILD_NUMBER} ${env.JOB_NAME} was successful after " + ((float)timePipeline).round(2) + " min."
     } else if( buildResult == "FAILURE" ) { 
         slackSend color: "danger", message: "Job: ${env.JOB_NAME} with buildnumber ${env.BUILD_NUMBER} was failed after " + currentBuild.duration / 1000 + " sec."
     } else if( buildResult == "UNSTABLE" ) { 
