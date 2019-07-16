@@ -39,7 +39,7 @@ node() {
     stage('Build') {
         if(isUnix()){
             sh 'ls'
-            //sh 'chmod +x mvnw'
+            sh 'chmod +x mvnw'
             sh './mvnw clean compile'
             sh './mvnw package'
             sh 'pwd'
