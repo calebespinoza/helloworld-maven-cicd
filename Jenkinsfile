@@ -6,7 +6,7 @@ def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/' + installName
 def labelNode = 'WS19_Agent'
-try {
+
 node() {
     def server = Artifactory.server 'artifactory.server'
     def rtMaven = Artifactory.newMavenBuild()
@@ -38,8 +38,8 @@ node() {
     stage('Build') {
         if(isUnix()){
             sh 'ls'
-            sh 'chmod +x mvnw'
-            sh './mvnw1 clean compile'
+            //sh 'chmod +x mvnw'
+            sh './mvnw clean compile'
             sh './mvnw package'
             sh 'pwd'
         } else {
@@ -85,12 +85,8 @@ node() {
 }
 
 
-    // Send Slack Notifications
-    notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
-} catch (Exception e) {
-    echo "Error"
-    notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
-}
+// Send Slack Notifications
+notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 
 
 // FUNCTIONS Section
