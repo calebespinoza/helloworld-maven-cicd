@@ -91,7 +91,7 @@ node() {
 
 
 // Send Slack Notifications
-notifyBuildStatus(currentBuild.result, currentBuild.duration)
+notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 
 
 // FUNCTIONS Section
