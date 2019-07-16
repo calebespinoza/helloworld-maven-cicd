@@ -83,16 +83,15 @@ node() {
         sh 'ls'
         sh 'find target/ -iname "*.jar" -mtime 0'
     }
-
-        notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+    
     } catch (Exception e) {
-        notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+        currentBuild.currentResult = "FAILURE"
     }
 }
 
 
 // Send Slack Notifications
-//notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 
 
 // FUNCTIONS Section
