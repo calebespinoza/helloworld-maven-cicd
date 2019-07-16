@@ -83,9 +83,10 @@ node() {
         sh 'ls'
         sh 'find target/ -iname "*.jar" -mtime 0'
     }
-    
+
     } catch (Exception e) {
-        currentBuild.currentResult = "FAILURE"
+        //currentBuild.currentResult = "FAILURE"
+        currentBuild.result = "FAILURE"
     }
 }
 
