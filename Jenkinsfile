@@ -8,6 +8,7 @@ def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables
 def labelNode = 'WS19_Agent'
 
 node() {
+    try {
     def server = Artifactory.server 'artifactory.server'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
@@ -82,11 +83,16 @@ node() {
         sh 'ls'
         sh 'find target/ -iname "*.jar" -mtime 0'
     }
+
+        notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+    } catch (Exception e) {
+        notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+    }
 }
 
 
 // Send Slack Notifications
-notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
+//notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
 
 
 // FUNCTIONS Section
