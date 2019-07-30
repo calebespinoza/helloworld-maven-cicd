@@ -79,10 +79,14 @@ node() {
             addJarToArtifactory(artUsr, artPass, JenkinPass, "${dirJar}","${finalDest}")
         }
 
-        stage ('Find files modified') {
-            sh 'ls'
-            sh 'find target/ -iname "*.jar" -mtime 0'
-        }
+        stage ('Promote Stage') {
+			echo 'Calling promoting build'
+			build job: 'Promotion1', 
+            parameters: [
+                string(name: 'serverBaseName', value: "${serverBaseName}"), 
+                string(name: 'jobName', value: "${env.JOB_NAME}")
+            ]
+		}
     } catch (Exception e) {
         currentBuild.result = "FAILED"
     }
