@@ -83,8 +83,8 @@ node() {
 			echo 'Calling promoting build'
 			build job: 'Promotion1', 
             parameters: [
-                string(name: 'serverBaseName', value: "${serverBaseName}"), 
-                string(name: 'jobName', value: "${env.JOB_NAME}")
+                string(name: 'serverBaseName1', value: "${serverBaseName}"), 
+                string(name: 'JobName', value: "${env.JOB_NAME}")
             ]
 		}
     } catch (Exception e) {
