@@ -2,6 +2,7 @@
 import java.lang.Math; 
 
 def serverBaseName = 'localhost'
+def appName = "HelloWorldwithMaven"
 def dirJar = 'target/java-artifact-1.0-SNAPSHOT.jar'
 def installName = "sec/backend/SbeBackEndJARInstallFiles_"+env.BUILD_TAG+".jar"
 def finalDest = 'http://10.211.55.4:8081/artifactory/BAC-Repositorio-Instalables/' + installName
@@ -84,11 +85,13 @@ node() {
 			build job: 'Promotion1', 
             parameters: [
                 string(name: 'serverBaseName1', value: "${serverBaseName}"), 
-                string(name: 'JobName', value: "${env.JOB_NAME}")
+                string(name: 'JobName', value: "${env.JOB_NAME}"),
+                string(name: 'appName', value: "${appName}")
             ]
 		}
     } catch (Exception e) {
         currentBuild.result = "FAILED"
+        notifyBuildStatus(currentBuild.currentResult, currentBuild.duration)
     }
 }
 
