@@ -128,5 +128,7 @@ def notifyBuildStatus(buildResult, time) {
 
 @NonCPS
 def getBuildUser() {
-    return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+    def getJenkinsUser = currentBuild.rawBuild.getCause(Cause.UserIdCause)
+	if ( getJenkinsUser == null ) { return "jenkins" }
+    return getJenkinsUser.getUserId()
 }
