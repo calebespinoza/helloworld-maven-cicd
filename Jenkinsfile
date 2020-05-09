@@ -45,7 +45,8 @@ node() {
         }
 
         stage ('Promotion to QA') {
-			echo 'Calling promoting build'
+            input(message: 'Do you want to promote this build to QA?', ok: 'Yes, let\'s do it!')
+			echo 'Send a Promotion Request to QA'
 			build job: 'PromotionToQA',
             parameters: [
                 string(name: 'JobName', value: "${env.JOB_NAME}"),
