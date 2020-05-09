@@ -1,7 +1,7 @@
 node() {
     try {
         stage('Clone Code') {
-            git 'https://gitlab.com/calebespinoza/hello-world-maven.git'
+            git 'git@github.com:calebespinoza/helloworld-maven-cicd.git'
         }
 
         stage('Compile') {
@@ -26,6 +26,11 @@ node() {
         }
 
         stage('Archive Artifact') {
+            if( isUnix() ) {
+                sh 'mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${env.BUILD_NUMBER}.jar'
+            } else {
+                bat 'mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${env.BUILD_NUMBER}.jar'
+            }
             archiveArtifacts artifacts: '**/target/*.jar', 
             fingerprint: true, 
             onlyIfSuccessful: true
@@ -39,7 +44,8 @@ node() {
                 string(name: 'BuildNumber', value: "${env.BUILD_NUMBER}"),
                 string(name: 'Author', value: "${env.GIT_COMMITTER_NAME}"),
                 string(name: 'Commit', value: "${env.GIT_COMMIT}"),
-                string(name: 'Branch', value: "${env.GIT_BRANCH}")
+                string(name: 'Branch', value: "${env.GIT_BRANCH}"),
+                string(name: 'Artifact', value: "helloworld-artifact-${env.BUILD_NUMBER}.jar")
             ]
 		}
     } catch (Exception e) {
