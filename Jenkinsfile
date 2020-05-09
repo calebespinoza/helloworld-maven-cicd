@@ -33,7 +33,7 @@ node() {
 
         stage ('Promote Stage') {
 			echo 'Calling promoting build'
-			build job: 'Promotion1', 
+			build job: 'PromotionToQA',
             parameters: [
                 string(name: 'JobName', value: "${env.JOB_NAME}"),
                 string(name: 'BuildNumber', value: "${env.BUILD_NUMBER}"),
