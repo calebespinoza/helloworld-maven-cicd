@@ -1,7 +1,7 @@
 node() {
     try {
         stage('Clone Code') {
-            git 'git@github.com:calebespinoza/helloworld-maven-cicd.git'
+            git 'https://github.com/calebespinoza/helloworld-maven-cicd.git'
         }
 
         stage('Compile') {
