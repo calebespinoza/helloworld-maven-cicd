@@ -36,7 +36,15 @@ node() {
             onlyIfSuccessful: true
         }
 
-        stage ('Promote Stage') {
+        stage('Deploy on Development'){
+            if( isUnix() ) {
+                sh "java -jar target/helloworld-artifact-${BUILD_NUMBER}.jar"
+            } else {
+                bat 'java -jar target/helloworld-artifact-${BUILD_NUMBER}.jar'
+            }
+        }
+
+        stage ('Promotion to QA') {
 			echo 'Calling promoting build'
 			build job: 'PromotionToQA',
             parameters: [
