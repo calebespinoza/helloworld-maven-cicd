@@ -27,9 +27,9 @@ node() {
 
         stage('Archive Artifact') {
             if( isUnix() ) {
-                sh 'mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${env.BUILD_NUMBER}.jar'
+                sh "mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${BUILD_NUMBER}.jar"
             } else {
-                bat 'mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${env.BUILD_NUMBER}.jar'
+                bat 'mv target/helloworld-artifact-1.0-SNAPSHOT.jar	target/helloworld-artifact-${BUILD_NUMBER}.jar'
             }
             archiveArtifacts artifacts: '**/target/*.jar', 
             fingerprint: true, 
